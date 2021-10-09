@@ -1,0 +1,43 @@
+org: aliyilmazz
+app: newpythonstarterapp
+service: aws-python-project-demo
+
+frameworkVersion: '2'
+
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http: 
+          path: hello
+          method: post
+
+resources:
+  Resources:
+    WildRydesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+          BucketName: wildrydes-andrei-maksimov-tue0205
+    WildRydesBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: 'WildRydesBucket'
+        PolicyDocument:
+          Statement:
+            - Effect: 'Allow'
+              Principal: '*'
+              Action:
+                - 's3:GetObject'
+              Resource:
+                Fn::Join:
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - Ref: 'WildRydesBucket'
+                    - '/*'
